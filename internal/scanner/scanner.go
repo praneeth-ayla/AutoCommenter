@@ -1,9 +1,11 @@
 package scanner
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
+	"os"
 	"path/filepath"
 )
 
@@ -20,8 +22,8 @@ var skipFilePatterns = []string{
 	".env.*",
 }
 
-func Scanner(path string) ([]string, error) {
-	files := []string{}
+func Scanner(path string) ([]FileInfo, error) {
+	files := []FileInfo{}
 	err := filepath.WalkDir(path, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			fmt.Println("Error:", err)
@@ -33,13 +35,23 @@ func Scanner(path string) ([]string, error) {
 			return fs.SkipDir
 		}
 
-		// Only print files
 		if !d.IsDir() {
 			base := filepath.Base(path)
 			if shouldSkipFile(base) {
 				return nil
 			}
-			files = append(files, path)
+
+			info, _ := d.Info()
+			lines := countLines(path)
+
+			file := FileInfo{
+				Path:  path,
+				Name:  base,
+				Size:  info.Size(),
+				Lines: lines,
+			}
+
+			files = append(files, file)
 		}
 
 		return nil
@@ -61,4 +73,23 @@ func shouldSkipFile(name string) bool {
 		}
 	}
 	return false
+}
+
+func countLines(path string) int {
+	file, err := os.Open(path)
+	if err != nil {
+		return 0
+	}
+	defer file.Close()
+
+	buf := make([]byte, 32*1024)
+	count := 0
+	for {
+		c, err := file.Read(buf)
+		count += bytes.Count(buf[:c], []byte{'\n'})
+		if err != nil {
+			break
+		}
+	}
+	return count
 }

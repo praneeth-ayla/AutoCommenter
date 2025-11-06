@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/praneeth-ayla/AutoCommenter/internal/scanner"
 	"google.golang.org/genai"
 )
 
@@ -11,7 +12,7 @@ type FileResponse struct {
 	Files []string `json:"files"`
 }
 
-func AnalyzeFilesForComments(ctx context.Context, client *genai.Client, files []string) (FileResponse, error) {
+func AnalyzeFilesForComments(ctx context.Context, client *genai.Client, files []scanner.FileInfo) (FileResponse, error) {
 	prompt := BuildAnalyzeFilesForCommentsPrompt(files)
 
 	config := &genai.GenerateContentConfig{
