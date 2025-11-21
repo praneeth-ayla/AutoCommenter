@@ -1,15 +1,14 @@
-package ai
+package prompt
 
 import (
 	"fmt"
 	"log"
 
 	"github.com/alpkeskin/gotoon"
-	"github.com/praneeth-ayla/AutoCommenter/internal/prompt"
 )
 
 // BuildGenerateCommentsForFilesPrompt constructs the AI prompt to generate comments for given files.
-func BuildGenerateCommentsForFilesPrompt(files []FileContent) string {
+func BuildGenerateCommentsForFilesPrompt(files []string) string {
 	data := map[string]interface{}{
 		"files": files,
 	}
@@ -24,5 +23,5 @@ func BuildGenerateCommentsForFilesPrompt(files []FileContent) string {
 		log.Fatal(err)
 	}
 
-	return fmt.Sprintf(prompt.GenerateCommentsForFiles, encoded)
+	return fmt.Sprintf(GenerateCommentsForFiles, encoded)
 }

@@ -1,4 +1,4 @@
-package ai
+package gemini
 
 // AnalyzeFilesForCommentsSchema defines the JSON schema for the AI's response when analyzing files for comments.
 var AnalyzeFilesForCommentsSchema = map[string]any{
