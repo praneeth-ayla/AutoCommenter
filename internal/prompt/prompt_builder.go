@@ -3,6 +3,7 @@ package prompt
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/alpkeskin/gotoon"
 )
@@ -24,4 +25,20 @@ func BuildGenerateCommentsForFilesPrompt(files []string) string {
 	}
 
 	return fmt.Sprintf(GenerateCommentsForFiles, encoded)
+}
+
+func BuildFileContextPrompt(path string, content string) string {
+	var b strings.Builder
+
+	b.WriteString("Return JSON for this file using the schema fields path, file_name, summary, exports, and imp_logic.\n")
+	b.WriteString("Identify exports and important logic from the content.\n\n")
+
+	b.WriteString("Path: ")
+	b.WriteString(path)
+	b.WriteString("\n\n")
+
+	b.WriteString("Content:\n")
+	b.WriteString(content)
+
+	return b.String()
 }
