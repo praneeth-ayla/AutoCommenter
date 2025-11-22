@@ -48,7 +48,7 @@ var GenerateContextSchema = map[string]any{
 			"type":  "array",
 			"items": map[string]any{"type": "string"},
 		},
-		"imp_logic": map[string]any{
+		"imports": map[string]any{
 			"type":  "array",
 			"items": map[string]any{"type": "string"},
 		},
@@ -60,7 +60,7 @@ var GenerateContextSchema = map[string]any{
 		"path",
 		"file_name",
 		"exports",
-		"imp_logic",
+		"imports",
 		"summary",
 	},
 }
@@ -83,7 +83,7 @@ var GenerateContextBatchSchema = map[string]any{
 						"type":  "array",
 						"items": map[string]any{"type": "string"},
 					},
-					"imp_logic": map[string]any{
+					"imports": map[string]any{
 						"type":  "array",
 						"items": map[string]any{"type": "string"},
 					},
@@ -95,7 +95,7 @@ var GenerateContextBatchSchema = map[string]any{
 					"path",
 					"file_name",
 					"exports",
-					"imp_logic",
+					"imports",
 					"summary",
 				},
 			},

@@ -36,7 +36,7 @@ var scanCmd = &cobra.Command{
 			return nil
 		}
 
-		batches := BatchByLines(filtered, 300)
+		batches := BatchByLines(filtered, 1000)
 		fmt.Println("Batches created:", len(batches))
 
 		t := ai.NewProvider("gemini")
@@ -61,7 +61,7 @@ var scanCmd = &cobra.Command{
 			for _, c := range contexts {
 				fmt.Println("File:", c.Path)
 				fmt.Println("Exports:", c.Exports)
-				fmt.Println("Imp Logic:", c.ImpLogic)
+				fmt.Println("Imports:", c.Imports)
 				fmt.Println("Name:", c.Name)
 				fmt.Println("Summary:", c.Summary)
 				fmt.Println("------------------------------------------------")

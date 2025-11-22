@@ -30,8 +30,8 @@ func BuildGenerateCommentsForFilesPrompt(files []string) string {
 func BuildFileContextPrompt(path string, content string) string {
 	var b strings.Builder
 
-	b.WriteString("Return JSON for this file using the schema fields path, file_name, summary, exports, and imp_logic.\n")
-	b.WriteString("Identify exports and important logic from the content.\n\n")
+	b.WriteString("Return JSON for this file using the schema fields path, file_name, summary, exports, and imports.\n")
+	b.WriteString("Identify exports and imports from the content.\n\n")
 
 	b.WriteString("Path: ")
 	b.WriteString(path)
