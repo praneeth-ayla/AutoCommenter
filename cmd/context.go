@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/praneeth-ayla/AutoCommenter/internal/ai"
 	"github.com/praneeth-ayla/AutoCommenter/internal/contextstore"
@@ -55,7 +56,6 @@ After generation you can run comment commands that use this context.`,
 			return fmt.Errorf("scan failed: %w", err)
 		}
 
-		fmt.Printf("File path: %v\n", rootPath)
 		if len(files) == 0 {
 			fmt.Println("No files found for context generation")
 			return nil
@@ -65,19 +65,29 @@ After generation you can run comment commands that use this context.`,
 		batches := scanner.BatchByLines(files, 500)
 		allContext := make(map[string]contextstore.FileDetails)
 
+		var wg sync.WaitGroup
+		var mu sync.Mutex
+
 		for _, batch := range batches {
-			batchData := scanner.Load(batch)
+			wg.Add(1)
+			go func(b []scanner.Info) {
+				defer wg.Done()
 
-			ctx, err := provider.GenerateContextBatch(batchData)
-			if err != nil {
-				fmt.Println("context batch error:", err)
-				continue
-			}
+				batchData := scanner.Load(b)
+				ctx, err := provider.GenerateContextBatch(batchData)
+				if err != nil {
+					fmt.Println("context batch error:", err)
+					return
+				}
 
-			for _, item := range ctx {
-				allContext[item.Path] = item
-			}
+				mu.Lock()
+				for _, item := range ctx {
+					allContext[item.Path] = item
+				}
+				mu.Unlock()
+			}(batch)
 		}
+		wg.Wait()
 
 		if len(allContext) == 0 {
 			fmt.Println("No context generated after processing batches")
