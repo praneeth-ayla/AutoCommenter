@@ -5,8 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"sync"
 
 	"github.com/praneeth-ayla/AutoCommenter/internal/ai"
@@ -49,7 +47,7 @@ After generation you can run comment commands that use this context.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("Generating Context")
 
-		rootPath := getProjectRoot()
+		rootPath := scanner.GetProjectRoot()
 		files, err := scanner.Scan(rootPath)
 		if err != nil {
 			fmt.Println("scan error:", err)
@@ -102,27 +100,4 @@ After generation you can run comment commands that use this context.`,
 		fmt.Println("context generation completed")
 		return nil
 	},
-}
-
-func getProjectRoot() string {
-	dir, err := os.Getwd()
-	if err != nil {
-		return "."
-	}
-
-	for {
-		// check if go.mod exists here
-		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			return dir
-		}
-
-		parent := filepath.Dir(dir)
-
-		// reached filesystem root
-		if parent == dir {
-			return "." // fallback
-		}
-
-		dir = parent
-	}
 }

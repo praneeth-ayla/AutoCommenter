@@ -56,7 +56,7 @@ func init() {
 // runGenerateComments is the main entry point for comment generation
 func runGenerateComments(cmd *cobra.Command, args []string) error {
 	// Initialize
-	rootPath := getProjectRoot()
+	rootPath := scanner.GetProjectRoot()
 	provider := ai.NewProvider("gemini")
 
 	// Scan project
@@ -99,7 +99,7 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 	}
 
 	// Summary
-	fmt.Printf("\n" + strings.Repeat("─", 50) + "\n")
+	fmt.Println("\n" + strings.Repeat("─", 50) + "\n")
 	fmt.Printf("📊 Summary: %d succeeded, %d failed\n", successCount, errorCount)
 
 	if errorCount > 0 {

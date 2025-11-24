@@ -1,11 +1,13 @@
 package prompt
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
 
 	"github.com/alpkeskin/gotoon"
+	"github.com/praneeth-ayla/AutoCommenter/internal/contextstore"
 )
 
 func BuildGenerateCommentsForFilesPrompt(content string, contextData string) string {
@@ -38,6 +40,27 @@ func BuildFileContextPrompt(path string, content string) string {
 
 	b.WriteString("Content:\n")
 	b.WriteString(content)
+
+	return b.String()
+}
+
+func BuildReadmePrompt(contexts []contextstore.FileDetails, existingReadme string) string {
+	var b strings.Builder
+
+	b.WriteString("Project Context:\n")
+	for _, c := range contexts {
+		j, _ := json.Marshal(c)
+		b.Write(j)
+		b.WriteString("\n")
+	}
+
+	if strings.TrimSpace(existingReadme) != "" {
+		b.WriteString("\nCurrent README (improve structure and clarity but keep valid info):\n")
+		b.WriteString(existingReadme)
+		b.WriteString("\n")
+	} else {
+		b.WriteString("\nNo README exists. Create a new one.\n")
+	}
 
 	return b.String()
 }

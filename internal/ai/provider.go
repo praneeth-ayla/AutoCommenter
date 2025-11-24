@@ -9,6 +9,7 @@ import (
 type Provider interface {
 	GenerateComments(content string, contexts []contextstore.FileDetails) (string, error)
 	GenerateContextBatch(files []scanner.Data) ([]contextstore.FileDetails, error)
+	GenerateReadme(contexts []contextstore.FileDetails, existingReadme string) (string, error)
 }
 
 func NewProvider(name string) Provider {
