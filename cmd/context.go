@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/praneeth-ayla/AutoCommenter/internal/ai"
+	"github.com/praneeth-ayla/AutoCommenter/internal/config"
 	"github.com/praneeth-ayla/AutoCommenter/internal/contextstore"
 	"github.com/praneeth-ayla/AutoCommenter/internal/scanner"
 	"github.com/spf13/cobra"
@@ -53,7 +54,9 @@ Example:
 			return nil
 		}
 
-		provider := ai.NewProvider("gemini")
+		providerName, _ := config.GetProvider()
+		provider := ai.NewProvider(providerName)
+
 		batches := scanner.BatchByLines(files, 500)
 		allContext := make(map[string]contextstore.FileDetails)
 
