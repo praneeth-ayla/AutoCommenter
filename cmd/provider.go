@@ -4,13 +4,11 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 
+	"github.com/praneeth-ayla/AutoCommenter/internal/ai"
 	"github.com/praneeth-ayla/AutoCommenter/internal/config"
+	"github.com/praneeth-ayla/AutoCommenter/internal/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -23,39 +21,21 @@ var providerCmd = &cobra.Command{
 	},
 }
 
-// List of supported providers
-var supportedProviders = []string{
-	"gemini",
-}
-
 var providerSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Interactively select an AI provider",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("Select AI Provider:")
-		for i, p := range supportedProviders {
-			fmt.Printf("  %d) %s\n", i+1, p)
-		}
-
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Enter choice number: ")
-		input, err := reader.ReadString('\n')
+		selectedProvider, err := ui.SelectOne("Select AI Provider:", ai.SupportedProviders)
 		if err != nil {
-			return fmt.Errorf("input error: %w", err)
+			return err
 		}
 
-		input = strings.TrimSpace(input)
-		choice, err := strconv.Atoi(input)
-		if err != nil || choice < 1 || choice > len(supportedProviders) {
-			return fmt.Errorf("invalid selection")
-		}
-
-		selected := supportedProviders[choice-1]
-		if err := config.SetProvider(selected); err != nil {
+		err = config.SetProvider(selectedProvider)
+		if err != nil {
 			return fmt.Errorf("could not save provider: %w", err)
 		}
 
-		fmt.Println("Provider updated to", selected)
+		fmt.Println("Provider updated to", selectedProvider)
 		return nil
 	},
 }

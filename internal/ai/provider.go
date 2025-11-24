@@ -15,6 +15,10 @@ type Provider interface {
 	GenerateReadme(contexts []contextstore.FileDetails, existingReadme string) (string, error)
 }
 
+var SupportedProviders = []string{
+	"gemini",
+}
+
 func NewProvider(name string) (Provider, error) {
 	var p Provider
 

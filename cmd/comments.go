@@ -13,7 +13,9 @@ import (
 	"github.com/praneeth-ayla/AutoCommenter/internal/ai"
 	"github.com/praneeth-ayla/AutoCommenter/internal/config"
 	"github.com/praneeth-ayla/AutoCommenter/internal/contextstore"
+	"github.com/praneeth-ayla/AutoCommenter/internal/prompt"
 	"github.com/praneeth-ayla/AutoCommenter/internal/scanner"
+	"github.com/praneeth-ayla/AutoCommenter/internal/ui"
 	"github.com/spf13/cobra"
 	"google.golang.org/genai"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -73,6 +75,13 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 		fmt.Println("provider error:", err)
 		return err
 	}
+
+	commentStyle, err := ui.SelectOne("Select comment style:", prompt.Styles)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(commentStyle)
 
 	rootPath := scanner.GetProjectRoot()
 	fmt.Println("Scanning project files...")
