@@ -32,7 +32,7 @@ func (g *GeminiProvider) GenerateContextBatch(files []scanner.Data) ([]contextst
 			},
 		},
 		ResponseMIMEType:   "application/json",
-		ResponseJsonSchema: GenerateContextBatchSchema,
+		ResponseJsonSchema: GenerateContextBatchSchema, // Use the predefined schema for validation.
 	}
 
 	input := []*genai.Content{
@@ -56,6 +56,7 @@ func (g *GeminiProvider) GenerateContextBatch(files []scanner.Data) ([]contextst
 		Files []contextstore.FileDetails `json:"files"`
 	}
 
+	// Unmarshal the raw JSON response into the parsed struct.
 	err = json.Unmarshal([]byte(raw), &parsed)
 	if err != nil {
 		return nil, err

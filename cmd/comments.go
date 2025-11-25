@@ -72,6 +72,7 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 	fmt.Println("Loading project context...")
 	ctxMap, err := contextstore.Load()
 	if err != nil {
+		// Inform user to generate context if none is found.
 		return fmt.Errorf("no project context found. Run: AutoCommenter context gen")
 	}
 
@@ -103,6 +104,7 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 func processFile(file scanner.Info, provider ai.Provider, ctx []contextstore.FileDetails, style string) error {
 	fd := scanner.LoadSingle(file)
 
+	// Use DoWithRetry for AI calls to handle transient errors.
 	commented, err := providerutil.DoWithRetry[string](
 		providerutil.MaxRetryAttempts,
 		providerutil.PerRequestTimeout,

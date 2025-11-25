@@ -89,10 +89,10 @@ Example:
 				mu.Lock()
 				for _, item := range ctxBatch {
 					rel, err := filepath.Rel(rootPath, item.Path)
-					if err != nil || rel == "." {
+					if err != nil || rel == "." { // Handle errors or if the file is at the root
 						item.Path = filepath.Clean(item.Path)
 					} else {
-						item.Path = filepath.ToSlash(rel)
+						item.Path = filepath.ToSlash(rel) // Use forward slashes for consistent paths
 					}
 
 					allContext[item.Path] = item

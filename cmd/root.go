@@ -28,8 +28,10 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	// Execute the root command and check for errors.
 	err := rootCmd.Execute()
 	if err != nil {
+		// Exit with a non-zero status code to indicate an error.
 		os.Exit(1)
 	}
 }

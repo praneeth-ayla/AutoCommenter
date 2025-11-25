@@ -9,17 +9,17 @@ var GenerateCommentsForFilesSchema = map[string]any{
 				"type": "object",
 				"properties": map[string]any{
 					"path": map[string]any{
-						"type": "string",
+						"type": "string", // Path of the file to generate comments for.
 					},
 					"content": map[string]any{
-						"type": "string",
+						"type": "string", // Content of the file.
 					},
 				},
-				"required": []string{"path", "content"},
+				"required": []string{"path", "content"}, // Both path and content are mandatory for each file.
 			},
 		},
 	},
-	"required": []string{"files"},
+	"required": []string{"files"}, // The 'files' field is required at the top level.
 }
 
 var GenerateContextBatchSchema = map[string]any{
@@ -31,21 +31,21 @@ var GenerateContextBatchSchema = map[string]any{
 				"type": "object",
 				"properties": map[string]any{
 					"path": map[string]any{
-						"type": "string",
+						"type": "string", // Path of the file.
 					},
 					"file_name": map[string]any{
-						"type": "string",
+						"type": "string", // Name of the file.
 					},
 					"exports": map[string]any{
 						"type":  "array",
-						"items": map[string]any{"type": "string"},
+						"items": map[string]any{"type": "string"}, // List of exported identifiers from the file.
 					},
 					"imports": map[string]any{
 						"type":  "array",
-						"items": map[string]any{"type": "string"},
+						"items": map[string]any{"type": "string"}, // List of imported packages.
 					},
 					"summary": map[string]any{
-						"type": "string",
+						"type": "string", // Summary of the file's purpose.
 					},
 				},
 				"required": []string{
@@ -54,9 +54,9 @@ var GenerateContextBatchSchema = map[string]any{
 					"exports",
 					"imports",
 					"summary",
-				},
+				}, // All these fields are mandatory for context generation.
 			},
 		},
 	},
-	"required": []string{"files"},
+	"required": []string{"files"}, // The 'files' field is required.
 }

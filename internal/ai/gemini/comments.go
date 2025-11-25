@@ -130,6 +130,7 @@ func applyAIFixes(original string, aiOutput string) (string, error) {
 	fixed = providerutil.EnsurePackageLine(fixed, original)
 
 	fset := token.NewFileSet()
+	// Parse the fixed code to ensure it's valid Go syntax.
 	if _, err := parser.ParseFile(fset, "", fixed, parser.AllErrors); err != nil {
 		return "", fmt.Errorf("ai returned invalid Go source: %w", err)
 	}

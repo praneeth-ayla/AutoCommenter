@@ -41,12 +41,14 @@ func Scan(root string) ([]Info, error) {
 	err = filepath.WalkDir(abs, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			fmt.Println("Walk error:", err)
+			// Skip the file/directory that caused the error but continue walking
 			return nil
 		}
 
 		if d.IsDir() {
 			rel, _ := filepath.Rel(abs, path)
 			if skipDirs[rel] {
+				// Skip this directory and its contents
 				return filepath.SkipDir
 			}
 			return nil
@@ -54,6 +56,7 @@ func Scan(root string) ([]Info, error) {
 
 		ext := filepath.Ext(path)
 		if !allowedExt[ext] {
+			// Skip files with disallowed extensions
 			return nil
 		}
 
@@ -93,18 +96,18 @@ func FilterFilesNeedingComments(files []Info) []Info {
 		p := f.Path
 
 		if strings.HasSuffix(p, ".d.ts") {
-			continue
+			continue // Skip declaration files
 		}
 		if strings.Contains(p, "/ui/") ||
 			strings.Contains(p, "/types/") ||
 			strings.Contains(p, "/__tests__/") ||
 			strings.Contains(p, "/.storybook/") {
-			continue
+			continue // Skip files in specific directories
 		}
 		if strings.HasPrefix(p, "next-env.d.ts") ||
 			strings.HasPrefix(p, "next.config") ||
 			strings.Contains(p, "seed.") {
-			continue
+			continue // Skip specific files or files containing specific patterns
 		}
 
 		result = append(result, f)
@@ -125,8 +128,9 @@ func countLines(path string) int {
 
 	for {
 		c, err := file.Read(buf)
-		count += bytes.Count(buf[:c], []byte{'\n'})
+		count += bytes.Count(buf[:c], []byte{'\n'}) // Count newline characters
 		if err != nil {
+			// Break loop on any read error, including EOF
 			break
 		}
 	}
