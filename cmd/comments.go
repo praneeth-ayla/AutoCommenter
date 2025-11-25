@@ -53,7 +53,6 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	_ = commentStyle
 
 	rootPath := scanner.GetProjectRoot()
 	fmt.Println("Scanning project files...")
@@ -82,7 +81,7 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 
 	for i, file := range filteredFiles {
 		fmt.Printf("\n[%d/%d] %s\n", i+1, len(filteredFiles), file.Path)
-		if err := processFile(file, provider, allCtxSlice); err != nil {
+		if err := processFile(file, provider, allCtxSlice, commentStyle); err != nil {
 			fmt.Printf("  ✖ error: %v\n", err)
 			errorCount++
 		} else {
@@ -100,14 +99,14 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func processFile(file scanner.Info, provider ai.Provider, ctx []contextstore.FileDetails) error {
+func processFile(file scanner.Info, provider ai.Provider, ctx []contextstore.FileDetails, style string) error {
 	fd := scanner.LoadSingle(file)
 
 	commented, err := providerutil.DoWithRetry[string](
 		providerutil.MaxRetryAttempts,
 		providerutil.PerRequestTimeout,
 		func() (string, error) {
-			return provider.GenerateComments(fd.Content, ctx)
+			return provider.GenerateComments(fd.Content, ctx, style)
 		},
 	)
 	if err != nil {

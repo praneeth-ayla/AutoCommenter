@@ -10,7 +10,7 @@ import (
 
 type Provider interface {
 	Validate() error
-	GenerateComments(content string, contexts []contextstore.FileDetails) (string, error)
+	GenerateComments(content string, contexts []contextstore.FileDetails, style string) (string, error)
 	GenerateContextBatch(files []scanner.Data) ([]contextstore.FileDetails, error)
 	GenerateReadme(contexts []contextstore.FileDetails, existingReadme string) (string, error)
 }

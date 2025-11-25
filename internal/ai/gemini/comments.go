@@ -14,7 +14,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func (g *GeminiProvider) GenerateComments(content string, contexts []contextstore.FileDetails) (string, error) {
+func (g *GeminiProvider) GenerateComments(content string, contexts []contextstore.FileDetails, style string) (string, error) {
 	ctx := context.Background()
 
 	client, err := genai.NewClient(ctx, nil)
@@ -30,7 +30,7 @@ func (g *GeminiProvider) GenerateComments(content string, contexts []contextstor
 		ctxParts.WriteByte('\n')
 	}
 	// Build the prompt for generating comments, including content and context.
-	promptText, err := prompt.BuildCommentPrompt(content, ctxParts.String())
+	promptText, err := prompt.BuildCommentPrompt(style, content, ctxParts.String())
 	if err != nil {
 		return "", err
 	}

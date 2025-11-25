@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -13,7 +14,7 @@ func BuildFileContextPrompt(path string, content string) string {
 	return fmt.Sprintf(TemplateFileContext, path, content)
 }
 
-func BuildCommentPrompt(content string, contextData string) (string, error) {
+func BuildCommentPrompt(style string, content string, contextData string) (string, error) {
 	data := map[string]interface{}{
 		"content": content,
 		"context": contextData,
@@ -28,7 +29,20 @@ func BuildCommentPrompt(content string, contextData string) (string, error) {
 		return "", fmt.Errorf("prompt encoding failed: %w", err)
 	}
 
-	return fmt.Sprintf(TemplateCommentsFile, encoded), nil
+	switch style {
+	case "minimalist":
+		return fmt.Sprintf(TemplateMinimalist, encoded), nil
+	case "explanatory":
+		return fmt.Sprintf(TemplateExplanatory, encoded), nil
+	case "detailed":
+		return fmt.Sprintf(TemplateDetailed, encoded), nil
+	case "docstring":
+		return fmt.Sprintf(TemplateDocstring, encoded), nil
+	case "inline-only":
+		return fmt.Sprintf(TemplateInlineOnly, encoded), nil
+	default:
+		return "", errors.New("unknown style: supported styles are minimalist, explanatory, detailed, docstring, inline-only")
+	}
 }
 
 func BuildFixesPrompt(original string, aiOutput string) string {
