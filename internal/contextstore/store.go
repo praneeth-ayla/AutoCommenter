@@ -36,7 +36,7 @@ func Load() (map[string]FileDetails, error) {
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		return make(map[string]FileDetails), nil
+		return nil, fmt.Errorf("context file not found: %s", configPath)
 	}
 
 	data, err := os.ReadFile(configPath)

@@ -62,7 +62,7 @@ Examples:
 		fmt.Println("Loading project context...")
 		contextData, err := contextstore.Load()
 		if err != nil {
-			return fmt.Errorf("failed to load context: %w", err)
+			return fmt.Errorf("no project context found. Run: AutoCommenter context gen")
 		}
 
 		allCtxSlice := contextstore.MapToSlice(contextData)
@@ -91,6 +91,7 @@ Examples:
 			filepath.Join(rootPath, "readme.md"),
 		}
 
+		// get custom path from user using --path or -p flag
 		for _, path := range readmePaths {
 			if data, err := os.ReadFile(path); err == nil {
 				existingReadme = string(data)
@@ -117,7 +118,7 @@ Examples:
 
 func init() {
 	genReadmeCmd.SilenceUsage = true
-	genReadmeCmd.SilenceErrors = true
+	// genReadmeCmd.SilenceErrors = true
 
 	// Add path flag
 	genReadmeCmd.Flags().StringVarP(&readmePath, "path", "p", "", "Custom path for README file (default: ./README.md)")

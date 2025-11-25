@@ -36,7 +36,7 @@ var genCommentsCmd = &cobra.Command{
 
 func init() {
 	genCommentsCmd.SilenceUsage = true
-	genCommentsCmd.SilenceErrors = true
+	// genCommentsCmd.SilenceErrors = true
 
 	rootCmd.AddCommand(commentsCmd)
 	commentsCmd.AddCommand(genCommentsCmd)
@@ -72,8 +72,9 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 	fmt.Println("Loading project context...")
 	ctxMap, err := contextstore.Load()
 	if err != nil {
-		return fmt.Errorf("load context: %w", err)
+		return fmt.Errorf("no project context found. Run: AutoCommenter context gen")
 	}
+
 	allCtxSlice := contextstore.MapToSlice(ctxMap)
 
 	fmt.Println("Generating comments (this may take a while)...")

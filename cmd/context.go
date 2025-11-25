@@ -120,7 +120,7 @@ Example:
 
 func init() {
 	contextGenCmd.SilenceUsage = true
-	contextGenCmd.SilenceErrors = true
+	// contextGenCmd.SilenceErrors = true
 
 	rootCmd.AddCommand(contextCmd)
 	contextCmd.AddCommand(contextGenCmd)
