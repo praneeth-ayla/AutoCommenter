@@ -83,7 +83,7 @@ func getConfigFilePath() (string, error) {
 	fileName := projectName + ".json" // Construct the filename for the context file.
 
 	// Combine home directory, a fixed directory name, and the generated filename.
-	return filepath.Join(home, "AutoCommenter", fileName), nil
+	return filepath.Join(home, "autocommenter", fileName), nil
 }
 
 // ensureDir creates a directory and any necessary parent directories if they don't exist.

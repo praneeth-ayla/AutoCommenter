@@ -23,7 +23,7 @@ var readmeCmd = &cobra.Command{
 and any existing README found in the project.
 
 Example:
-  AutoCommenter readme gen
+  autocommenter readme gen
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Use 'readme gen' to generate readme.md for your project")
@@ -46,9 +46,9 @@ Actions:
   3. Write a new README.md
 
 Examples:
-  AutoCommenter readme gen
-  AutoCommenter readme gen --path docs/README.md
-  AutoCommenter readme gen -p ./documentation/README.md
+  autocommenter readme gen
+  autocommenter readme gen --path docs/README.md
+  autocommenter readme gen -p ./documentation/README.md
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		providerName, _ := config.GetProvider()
@@ -62,7 +62,7 @@ Examples:
 		fmt.Println("Loading project context...")
 		contextData, err := contextstore.Load()
 		if err != nil {
-			return fmt.Errorf("no project context found. Run: AutoCommenter context gen")
+			return fmt.Errorf("no project context found. Run: autocommenter context gen")
 		}
 
 		allCtxSlice := contextstore.MapToSlice(contextData)

@@ -18,7 +18,7 @@ var providerCmd = &cobra.Command{
 	Short: "Manage AI provider setting",
 	Long:  `Set or view which AI provider is used for context generation.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Use 'AutoCommenter provider set' to interactively set provider")
+		fmt.Println("Use 'autocommenter provider set' to interactively set provider")
 	},
 }
 

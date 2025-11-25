@@ -21,7 +21,7 @@ var commentsCmd = &cobra.Command{
 by using AI to document your code automatically.
 
 Example:
-  AutoCommenter comments gen
+  autocommenter comments gen
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Use 'comments gen' to generate comments for your files")
@@ -73,7 +73,7 @@ func runGenerateComments(cmd *cobra.Command, args []string) error {
 	ctxMap, err := contextstore.Load()
 	if err != nil {
 		// Inform user to generate context if none is found.
-		return fmt.Errorf("no project context found. Run: AutoCommenter context gen")
+		return fmt.Errorf("no project context found. Run: autocommenter context gen")
 	}
 
 	allCtxSlice := contextstore.MapToSlice(ctxMap)

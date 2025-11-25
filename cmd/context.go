@@ -24,10 +24,10 @@ var contextCmd = &cobra.Command{
 Use this command to scan the project and collect useful information.
 
 Example:
-  AutoCommenter context gen
+  autocommenter context gen
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Run 'AutoCommenter context gen' to generate context")
+		fmt.Println("Run 'autocommenter context gen' to generate context")
 	},
 }
 
@@ -38,7 +38,7 @@ var contextGenCmd = &cobra.Command{
 This improves the quality of generated comments and readme later.
 
 Example:
-  AutoCommenter context gen
+  autocommenter context gen
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		providerName, _ := config.GetProvider()
