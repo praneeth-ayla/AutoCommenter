@@ -30,6 +30,10 @@ Example:
 	},
 }
 
+var (
+	readmePath string // Flag for custom README path
+)
+
 var genReadmeCmd = &cobra.Command{
 	Use:   "gen",
 	Short: "Generate or update README.md",
@@ -41,8 +45,10 @@ Actions:
   2. Merge with existing README if available
   3. Write a new README.md
 
-Example:
+Examples:
   AutoCommenter readme gen
+  AutoCommenter readme gen --path docs/README.md
+  AutoCommenter readme gen -p ./documentation/README.md
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		providerName, _ := config.GetProvider()
@@ -61,9 +67,26 @@ Example:
 
 		allCtxSlice := contextstore.MapToSlice(contextData)
 
-		// check existing README file
+		// Determine output path
+		outputPath := filepath.Join(rootPath, "README.md")
+		if readmePath != "" {
+			outputPath = readmePath
+			// If it's a relative path, make it absolute relative to project root
+			if !filepath.IsAbs(outputPath) {
+				outputPath = filepath.Join(rootPath, outputPath)
+			}
+		}
+
+		// Ensure directory exists
+		outputDir := filepath.Dir(outputPath)
+		if err := os.MkdirAll(outputDir, 0755); err != nil {
+			return fmt.Errorf("failed to create directory %s: %w", outputDir, err)
+		}
+
+		// check existing README file (check both default location and custom path)
 		var existingReadme string
 		readmePaths := []string{
+			outputPath, // Check the target path first
 			filepath.Join(rootPath, "README.md"),
 			filepath.Join(rootPath, "readme.md"),
 		}
@@ -82,8 +105,6 @@ Example:
 			return fmt.Errorf("README generation failed: %w", err)
 		}
 
-		outputPath := filepath.Join(rootPath, "README.md")
-
 		err = scanner.WriteFile(outputPath, newReadme)
 		if err != nil {
 			return fmt.Errorf("failed to write README.md: %w", err)
@@ -97,6 +118,9 @@ Example:
 func init() {
 	genReadmeCmd.SilenceUsage = true
 	genReadmeCmd.SilenceErrors = true
+
+	// Add path flag
+	genReadmeCmd.Flags().StringVarP(&readmePath, "path", "p", "", "Custom path for README file (default: ./README.md)")
 
 	rootCmd.AddCommand(readmeCmd)
 	readmeCmd.AddCommand(genReadmeCmd)
