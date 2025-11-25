@@ -49,7 +49,7 @@ func BuildFixesPrompt(original string, aiOutput string) string {
 	return fmt.Sprintf(TemplateApplyFixes, original, aiOutput)
 }
 
-func BuildReadmePrompt(contexts []contextstore.FileDetails, existingReadme string) (string, error) {
+func BuildReadmePrompt(contexts []contextstore.FileDetails, existingReadme string, fileTree string) (string, error) {
 	var sb strings.Builder
 
 	for _, c := range contexts {
@@ -63,6 +63,7 @@ func BuildReadmePrompt(contexts []contextstore.FileDetails, existingReadme strin
 
 	contextStr := sb.String()
 	readmeStr := strings.TrimSpace(existingReadme)
+	treeStr := strings.TrimSpace(fileTree)
 
-	return fmt.Sprintf(TemplateReadme, contextStr, readmeStr), nil
+	return fmt.Sprintf(TemplateReadme, contextStr, treeStr, readmeStr), nil
 }

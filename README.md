@@ -1,111 +1,104 @@
-# AutoCommenter 🧠
+# AutoCommenter
 
-[![Go Version](https://img.shields.io/badge/go-1.21+-blue.svg)](https://golang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+AutoCommenter is a command-line interface (CLI) tool designed to automate documentation for Go projects. It leverages AI to scan your codebase, understand its structure, and generate code comments and `README.md` files.
 
-**AutoCommenter** is a command-line tool that leverages AI to automate the tedious process of writing code comments and project documentation. It scans your codebase, builds a contextual understanding using Google's Gemini model, and then uses that context to generate high-quality, meaningful comments and a comprehensive `README.md` file.
+## Overview
 
----
+The tool operates by first analyzing your project files to build a comprehensive context. This context is then used by the configured AI provider (e.g., Gemini) to generate relevant and accurate documentation, helping to maintain code clarity and project understanding.
 
-## ✨ Features
+Key functionalities include:
+*   **AI Provider Management:** Configure and switch between supported AI providers.
+*   **Project Context Generation:** Scan the project directory to create a detailed context for the AI.
+*   **Automated Commenting:** Generate comments for Go source files based on their content and the project context.
+*   **README Generation:** Create a `README.md` file summarizing the project.
 
-*   **AI-Powered Context Generation**: Scans your entire project to understand the purpose of each file, its exports, and its relationship with other modules.
-*   **Automated Code Commenting**: Intelligently inserts detailed, context-aware comments directly into your source files.
-*   **README.md Generation**: Automatically creates a well-structured `README.md` for your project based on the overall code context.
-*   **Two-Step Process**: Ensures high-quality output by first building a project-wide context before generating comments or documentation.
-*   **Modular AI Backend**: Built with a provider interface to easily support different AI models in the future (currently implemented with Google Gemini).
+## Installation
 
----
+To install the `ac` CLI tool, use the following `go install` command:
 
-## ⚙️ How It Works
+```bash
+go install github.com/praneeth-ayla/AutoCommenter/cmd/ac
+```
 
-The tool operates in a two-step process to ensure high-quality, context-aware output:
+## Configuration
 
-1.  **Generate Context**: First, `AutoCommenter` scans your project to understand the purpose of each file. This information is summarized by the AI and stored locally in a `.autocommenter/context.json` file. This step builds a holistic understanding of your entire codebase.
+Before using the tool, you must configure an AI provider and provide the necessary API key.
 
-2.  **Generate Artifacts**: With the project context established, you can generate code comments or a README. This approach ensures that the generated content is not just based on a single file, but on the project as a whole, leading to more accurate and relevant results.
+1.  **API Key**: The tool requires an API key for the selected provider. For the Gemini provider, create a `.env` file in the project root and add your key:
+    ```text
+    GEMINI_API_KEY=your_api_key_here
+    ```
 
----
+2.  **Set AI Provider**: Use the `provider set` command to choose your AI provider. You will be prompted to select from a list of supported providers.
 
-## 🚀 Getting Started
+    ```bash
+    # Set the AI provider via an interactive selector
+    ac provider set
+    ```
 
-### Prerequisites
+3.  **Verify Configuration**: You can check the currently configured provider at any time.
 
-*   Go 1.21 or later.
-*   A Google Gemini API key.
+    ```bash
+    # Get the currently configured provider
+    ac provider get
+    ```
 
-### 1. Installation
+## Usage
 
-You can install `AutoCommenter` directly using `go install`:
+The typical workflow involves generating the project context first, followed by generating comments or a README file.
 
-go install github.com/praneeth-ayla/AutoCommenter/cmd/autocommenter@latest
+### 1. Generate Project Context
 
-### 2. Configuration
+This command scans your Go project, analyzes the file structure and content, and saves a context summary that the AI will use in subsequent steps.
 
-Export your Google Gemini API key as an environment variable:
+```bash
+# Scan the project and generate context
+ac context gen
+```
 
-export GEMINI_API_KEY="YOUR_API_KEY_HERE"
+### 2. Generate Code Comments
 
----
+After the context is generated, you can use this command to automatically add comments to your Go source files. The tool identifies files that need comments and applies them.
 
-## 🧰 Usage
+```bash
+# Generate comments for Go files
+ac comments gen
+```
 
-All commands should be run from the root directory of your project.
+### 3. Generate README File
 
-### Step 1: Generate Project Context
+This command uses the project context to generate a new `README.md` file for your project.
 
-This is the first and most important step. It creates the knowledge base the tool uses for all other operations.
+```bash
+# Generate a README.md file
+ac readme gen
+```
 
-autocommenter context gen
+## Project Structure
 
-This command will:
-*   Recursively scan your source files.
-*   Call the Gemini API to generate a summary for each file.
-*   Save this context to a `.autocommenter/context.json` file in your project root.
+The project is organized into command-line definitions and internal packages that handle the core logic.
 
-### Step 2 (Option A): Generate Code Comments
-
-Once the context is generated, you can add comments to your files. The tool will identify which files need comments and generate them.
-
-autocommenter comments gen
-
-### Step 2 (Option B): Generate a README File
-
-To generate a new `README.md` for your project based on the code context:
-
-autocommenter readme gen
-
-If a `README.md` file already exists, the tool will attempt to merge the AI-generated content with your existing file.
-
----
-
-## 🧱 Project Structure
-
-A brief overview of the `AutoCommenter` internal structure:
-
-AutoCommenter/
-├── cmd/                  # Cobra CLI command definitions (root, context, comments, readme)
+```text
+.
+├── cmd/
+│   ├── ac/
+│   │   └── main.go         # Main application entry point
+│   ├── comments.go       # Defines the 'comments' command
+│   ├── context.go        # Defines the 'context' command
+│   ├── provider.go       # Defines the 'provider' command
+│   ├── readme.go         # Defines the 'readme' command
+│   └── root.go           # Root Cobra command setup
 ├── internal/
-│   ├── ai/               # AI provider interface and Gemini implementation
-│   ├── contextstore/     # Logic for saving and loading project context from JSON
-│   ├── prompt/           # Builders for constructing prompts sent to the AI
-│   └── scanner/          # File system scanning, batching, and I/O utilities
-├── main.go               # Main application entry point
-└── go.mod
+│   ├── ai/               # AI provider interfaces and implementations (Gemini)
+│   ├── config/           # Application configuration management
+│   ├── contextstore/     # Logic for saving and loading project context
+│   ├── prompt/           # AI prompt templates and builders
+│   ├── scanner/          # File system scanning and processing utilities
+│   └── ui/               # User interface components like selectors
+├── go.mod
+└── LICENSE
+```
 
----
+## License
 
-## 🌐 Future Enhancements
-
-*   Support for more programming languages.
-*   Integration with other AI providers (e.g., OpenAI, Anthropic).
-*   Fine-grained control over commenting style and verbosity.
-*   A VS Code extension for a more integrated workflow.
-
-Contributions are welcome! Feel free to open an issue or submit a pull request.
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is available under the license specified in the `LICENSE` file.
